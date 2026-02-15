@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seconde Générale - Portail Élèves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-a: #f9efe2;
+      --bg-b: #d6f1ff;
+      --ink: #132238;
+      --card: #ffffff;
+      --orange: #ff8c42;
+      --cyan: #27c2ff;
+      --green: #20b486;
+      --shadow: 0 14px 35px rgba(19, 34, 56, 0.18);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Manrope", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255, 140, 66, 0.38) 0, transparent 33%),
+        radial-gradient(circle at 80% 10%, rgba(39, 194, 255, 0.42) 0, transparent 35%),
+        linear-gradient(140deg, var(--bg-a), var(--bg-b));
+      overflow-x: hidden;
+    }
+
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 36px 18px 50px;
+    }
+
+    .hero {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(4px);
+      border: 3px solid rgba(255, 255, 255, 0.9);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      padding: 30px 22px;
+      text-align: center;
+      animation: pop 0.85s ease;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Bangers", cursive;
+      letter-spacing: 1px;
+      font-size: clamp(2.1rem, 5vw, 4rem);
+      color: #0f2742;
+      text-shadow: 2px 2px 0 rgba(255, 140, 66, 0.35);
+    }
+
+    .hero p {
+      max-width: 740px;
+      margin: 16px auto 0;
+      font-size: clamp(1rem, 2.1vw, 1.2rem);
+      line-height: 1.55;
+      font-weight: 600;
+    }
+
+    .enter {
+      margin-top: 24px;
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 30px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(100deg, var(--orange), #ff6a3d);
+      box-shadow: 0 10px 18px rgba(255, 106, 61, 0.4);
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .enter:hover {
+      transform: translateY(-2px) scale(1.02);
+      filter: saturate(1.1);
+    }
+
+    #menu {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    #menu.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .card {
+      text-decoration: none;
+      color: var(--ink);
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 2px solid rgba(19, 34, 56, 0.08);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      padding: 18px;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.14);
+    }
+
+    .card .tag {
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: #fff;
+      width: fit-content;
+    }
+
+    .card h2 {
+      margin: 11px 0 4px;
+      font-size: 1.1rem;
+      line-height: 1.2;
+    }
+
+    .hint {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 0.92rem;
+      font-weight: 600;
+      opacity: 0.8;
+    }
+
+    .c1 { background: var(--orange); }
+    .c2 { background: var(--cyan); }
+    .c3 { background: var(--green); }
+
+    @keyframes pop {
+      0% { opacity: 0; transform: translateY(12px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>Portail Seconde Générale</h1>
+      <p>
+        Clique pour ouvrir ton espace de matières. Chaque discipline aura ses exercices dédiés
+        (QCM, entraînements, révisions, défis interactifs).
+      </p>
+      <button class="enter" id="openMenu">Ouvrir le menu des matières</button>
+
+      <section id="menu" aria-label="Matières de seconde générale">
+        <a class="card" href="maths.html"><span class="tag c1">Matière</span><h2>Maths</h2><span>Exercices de logique, calcul, fonctions.</span></a>
+        <a class="card" href="francais.html"><span class="tag c2">Matière</span><h2>Français</h2><span>Lecture, écriture, méthode, oral.</span></a>
+        <a class="card" href="physique-chimie.html"><span class="tag c3">Matière</span><h2>Physique-Chimie</h2><span>Expériences, notions, problèmes guidés.</span></a>
+        <a class="card" href="svt.html"><span class="tag c1">Matière</span><h2>SVT</h2><span>Corps humain, Terre, environnement.</span></a>
+        <a class="card" href="histoire-geo.html"><span class="tag c2">Matière</span><h2>Histoire-Géo</h2><span>Repères, analyses, documents.</span></a>
+        <a class="card" href="anglais.html"><span class="tag c3">Matière</span><h2>Anglais</h2><span>Compréhension, vocabulaire, communication.</span></a>
+        <a class="card" href="espagnol.html"><span class="tag c1">Matière</span><h2>Espagnol</h2><span>Expression, civilisation, grammaire.</span></a>
+        <a class="card" href="enseignement-scientifique.html"><span class="tag c2">Matière</span><h2>Ens. Scientifique</h2><span>Culture scientifique transversale.</span></a>
+        <a class="card" href="snt.html"><span class="tag c3">Matière</span><h2>SNT</h2><span>Numérique, données, réseaux, web.</span></a>
+      </section>
+    </section>
+
+    <p class="hint">Objectif: ajouter ensuite des exercices individuels dans chaque page matière.</p>
+  </main>
+
+  <script>
+    const button = document.getElementById("openMenu");
+    const menu = document.getElementById("menu");
+
+    button.addEventListener("click", () => {
+      menu.classList.toggle("visible");
+      button.textContent = menu.classList.contains("visible")
+        ? "Masquer le menu"
+        : "Ouvrir le menu des matières";
+
+      if (menu.classList.contains("visible")) {
+        menu.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Espagnol - Seconde Générale</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/matieres.css" />
+</head>
+<body>
+  <main>
+    <section class="panel">
+      <div class="topbar"><a class="back" href="index.html">Retour au menu</a><span id="level-badge" class="badge"></span></div>
+      <h1 id="matiere-title"></h1>
+      <p id="matiere-intro" class="lead"></p>
+      <div id="app"></div>
+      <div class="actions"><button id="btn-check">Corriger</button><button id="btn-reset">Recommencer</button></div>
+      <p id="score"></p>
+    </section>
+  </main>
+  <script>
+    window.MATIERE_CONFIG = {
+      title: "Espagnol",
+      level: "Seconde Générale",
+      intro: "Comprensión, vocabulario y gramática.",
+      exercises: [
+        { type: "qcm", question: "Traducción de 'bonjour' en espagnol:", choices: ["Hola", "Adiós", "Gracias"], answer: 0, hint: "Salutation de base." },
+        { type: "text", question: "Écris en espagnol: 'Je m'appelle Alex'.", accepted: ["me llamo alex", "yo me llamo alex"], hint: "Forme 'me llamo ...'." },
+        { type: "qcm", question: "'Nosotros' signifie...", choices: ["Vous", "Nous", "Ils"], answer: 1, hint: "1re personne du pluriel." }
+      ]
+    };
+  </script>
+  <script src="assets/exercices.js"></script>
+</body>
+</html>

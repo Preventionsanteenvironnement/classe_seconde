@@ -1,0 +1,146 @@
+:root {
+  --bg-a: #fff0df;
+  --bg-b: #dff4ff;
+  --ink: #17273d;
+  --card: #ffffff;
+  --accent: #ff7c3a;
+  --accent-2: #10b1ff;
+  --ok: #149b68;
+  --bad: #d24b4b;
+  --shadow: 0 12px 28px rgba(23, 39, 61, 0.14);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Manrope", system-ui, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 10% 18%, rgba(255, 124, 58, 0.3) 0, transparent 34%),
+    radial-gradient(circle at 90% 12%, rgba(16, 177, 255, 0.3) 0, transparent 36%),
+    linear-gradient(130deg, var(--bg-a), var(--bg-b));
+}
+
+main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 26px 16px 44px;
+}
+
+.panel {
+  background: var(--card);
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+p.lead {
+  margin: 0 0 16px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.back {
+  text-decoration: none;
+  color: #0f6fd2;
+  font-weight: 800;
+}
+
+.badge {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, var(--accent), #ffa25f);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.84rem;
+}
+
+.exercise {
+  border: 2px solid rgba(23, 39, 61, 0.08);
+  border-radius: 16px;
+  padding: 14px;
+  margin-top: 14px;
+}
+
+.exercise h2 {
+  margin: 0 0 8px;
+  font-size: 1.06rem;
+}
+
+.options {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.option {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  background: #f8fbff;
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+input[type="text"] {
+  width: 100%;
+  border: 2px solid #d6e5f5;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+.actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button {
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+#btn-check {
+  background: linear-gradient(120deg, var(--accent), #ff995a);
+  color: #fff;
+}
+
+#btn-reset {
+  background: linear-gradient(120deg, var(--accent-2), #6dd2ff);
+  color: #00324b;
+}
+
+.feedback {
+  margin-top: 12px;
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.feedback.ok { color: var(--ok); }
+.feedback.bad { color: var(--bad); }
+
+#score {
+  margin-top: 16px;
+  font-size: 1rem;
+  font-weight: 900;
+}

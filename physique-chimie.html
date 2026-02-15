@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Physique-Chimie - Seconde Générale</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/matieres.css" />
+</head>
+<body>
+  <main>
+    <section class="panel">
+      <div class="topbar"><a class="back" href="index.html">Retour au menu</a><span id="level-badge" class="badge"></span></div>
+      <h1 id="matiere-title"></h1>
+      <p id="matiere-intro" class="lead"></p>
+      <div id="app"></div>
+      <div class="actions"><button id="btn-check">Corriger</button><button id="btn-reset">Recommencer</button></div>
+      <p id="score"></p>
+    </section>
+  </main>
+  <script>
+    window.MATIERE_CONFIG = {
+      title: "Physique-Chimie",
+      level: "Seconde Générale",
+      intro: "Mouvements, énergie, transformations chimiques.",
+      exercises: [
+        { type: "qcm", question: "L'unité de la tension électrique est...", choices: ["Volt", "Watt", "Ampère"], answer: 0, hint: "Symbole V." },
+        { type: "text", question: "Quel gaz est majoritaire dans l'air?", accepted: ["diazote", "azote", "n2"], hint: "Environ 78%." },
+        { type: "qcm", question: "Une transformation chimique conserve...", choices: ["La masse totale", "La couleur", "La température"], answer: 0, hint: "Principe de Lavoisier." }
+      ]
+    };
+  </script>
+  <script src="assets/exercices.js"></script>
+</body>
+</html>

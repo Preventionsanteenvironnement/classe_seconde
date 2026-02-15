@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maths - Intervalles pas à pas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg1: #fff4e8;
+      --bg2: #dbf4ff;
+      --ink: #1a2a3f;
+      --card: #ffffff;
+      --orange: #ff8a3d;
+      --blue: #27b5ff;
+      --green: #13a76a;
+      --red: #d84f4f;
+      --shadow: 0 14px 28px rgba(26, 42, 63, 0.14);
+      --r: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Nunito", sans-serif;
+      background:
+        radial-gradient(circle at 12% 12%, rgba(255, 138, 61, 0.35), transparent 35%),
+        radial-gradient(circle at 85% 8%, rgba(39, 181, 255, 0.35), transparent 36%),
+        linear-gradient(140deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+    }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 18px 14px 32px;
+    }
+
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .back {
+      text-decoration: none;
+      color: #0f6fd2;
+      font-weight: 800;
+      background: #ffffffaa;
+      padding: 8px 12px;
+      border-radius: 999px;
+    }
+
+    .pill {
+      background: linear-gradient(120deg, var(--orange), #ffa55f);
+      color: #fff;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    h1 {
+      font-family: "Baloo 2", cursive;
+      font-size: clamp(2rem, 6vw, 3rem);
+      margin: 12px 0 6px;
+      line-height: 1;
+    }
+
+    .subtitle {
+      margin: 0 0 12px;
+      font-weight: 700;
+      line-height: 1.45;
+      font-size: 1.03rem;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin-top: 12px;
+    }
+
+    .small { font-size: 0.95rem; line-height: 1.45; }
+
+    .example {
+      background: #f8fbff;
+      border-left: 5px solid var(--blue);
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 8px;
+      font-weight: 700;
+    }
+
+    #exercise-box h2 {
+      margin: 2px 0 6px;
+      font-size: 1.18rem;
+      font-family: "Baloo 2", cursive;
+    }
+
+    #q-text {
+      margin: 8px 0;
+      font-size: 1.06rem;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .choices {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .choice {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      border-radius: 12px;
+      background: #f7fbff;
+      padding: 9px 10px;
+      border: 2px solid #d9ebfa;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 11px;
+      border: 2px solid #d7e7f5;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: "Nunito", sans-serif;
+      margin-top: 8px;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-family: "Nunito", sans-serif;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    #check { background: linear-gradient(120deg, var(--orange), #ff9c58); color: #fff; }
+    #next { background: linear-gradient(120deg, var(--blue), #7ad4ff); color: #00334d; }
+    #pause { background: linear-gradient(120deg, #bcead8, #86d9bb); color: #084b35; }
+
+    #feedback { margin-top: 10px; font-weight: 800; line-height: 1.45; }
+    #feedback.ok { color: var(--green); }
+    #feedback.bad { color: var(--red); }
+
+    .progress {
+      margin-top: 10px;
+      background: #e6f3fb;
+      border-radius: 999px;
+      height: 10px;
+      overflow: hidden;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(120deg, var(--orange), var(--blue));
+      transition: width 0.3s ease;
+    }
+
+    .stat {
+      margin-top: 7px;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .pause-box {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 12px;
+      background: #fff7e9;
+      border: 2px dashed #ffc288;
+      font-weight: 800;
+    }
+
+    @media (max-width: 640px) {
+      #q-text { font-size: 1rem; }
+      .subtitle { font-size: 0.98rem; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="top">
+      <a class="back" href="index.html">Retour au menu</a>
+      <span class="pill">Niveau 1 - Intervalles</span>
+    </div>
+
+    <h1>Intervalles en douceur</h1>
+    <p class="subtitle">
+      On avance très progressivement. Objectif: comprendre <strong>[a;b[</strong>,
+      <strong>l'intersection (∩)</strong> et <strong>la réunion (∪)</strong> avec des exemples concrets.
+    </p>
+
+    <section class="card small">
+      <strong>Image concrète:</strong> pense à une rue avec des maisons numérotées.
+      Un intervalle, c'est une zone de maisons autorisées.
+      <div class="example">Exemple: [2;6[ = on prend 2, 3, 4, 5 et tout ce qu'il y a entre, mais pas 6.</div>
+      <div class="example">Intersection (∩): ce que deux zones ont en commun.</div>
+      <div class="example">Réunion (∪): tout ce qu'on a dans la zone 1 ou la zone 2.</div>
+    </section>
+
+    <section id="exercise-box" class="card">
+      <h2 id="q-title">Exercice</h2>
+      <p id="q-text"></p>
+      <div id="q-area"></div>
+      <div class="row">
+        <button id="check">Valider</button>
+        <button id="next" disabled>Suivant</button>
+        <button id="pause">Pause</button>
+      </div>
+      <p id="feedback"></p>
+      <div class="progress"><div id="bar" class="bar"></div></div>
+      <p id="stat" class="stat"></p>
+      <div id="pauseBox" class="pause-box"></div>
+    </section>
+  </main>
+
+  <script>
+    const exercices = [
+      {
+        type: "qcm",
+        titre: "1/14 - Lire un intervalle",
+        question: "Dans [3;8[, le nombre 3 est-il inclus ?",
+        choix: ["Oui", "Non"],
+        reponse: 0,
+        explication: "Le crochet fermé [ signifie: on prend le nombre."
+      },
+      {
+        type: "qcm",
+        titre: "2/14 - Lire un intervalle",
+        question: "Dans [3;8[, le nombre 8 est-il inclus ?",
+        choix: ["Oui", "Non"],
+        reponse: 1,
+        explication: "Le crochet ouvert [ à droite signifie: on ne prend pas 8."
+      },
+      {
+        type: "text",
+        titre: "3/14 - Notation",
+        question: "Écris l'intervalle 'de 0 inclus à 5 exclu'.",
+        attendus: ["[0;5["],
+        explication: "Inclus à gauche = [, exclu à droite = [."
+      },
+      {
+        type: "qcm",
+        titre: "4/14 - Appartenance",
+        question: "Le nombre 4 appartient-il à [1;4[ ?",
+        choix: ["Oui", "Non"],
+        reponse: 1,
+        explication: "4 est la borne de droite et elle est exclue."
+      },
+      {
+        type: "qcm",
+        titre: "5/14 - Intersection",
+        question: "A=[1;6] et B=[4;9]. Quel est A ∩ B ?",
+        choix: ["[1;9]", "[4;6]", "[1;4]"],
+        reponse: 1,
+        explication: "Intersection = partie commune."
+      },
+      {
+        type: "text",
+        titre: "6/14 - Intersection",
+        question: "A=[-2;3] et B=[1;5]. Écris A ∩ B.",
+        attendus: ["[1;3]"],
+        explication: "On garde ce qui est dans les deux: de 1 à 3."
+      },
+      {
+        type: "qcm",
+        titre: "7/14 - Réunion",
+        question: "A=[1;4] et B=[3;7]. Quel est A ∪ B ?",
+        choix: ["[3;4]", "[1;7]", "[1;3]"],
+        reponse: 1,
+        explication: "Réunion = tout ce qu'on couvre avec A ou B."
+      },
+      {
+        type: "text",
+        titre: "8/14 - Réunion",
+        question: "A=[-1;2[ et B=[2;5]. Écris A ∪ B.",
+        attendus: ["[-1;5]"],
+        explication: "2 est pris par B, donc pas de trou: on va de -1 à 5."
+      },
+      {
+        type: "qcm",
+        titre: "9/14 - Cas sans recouvrement",
+        question: "A=[0;2] et B=[5;7]. L'intersection vaut...",
+        choix: ["[2;5]", "∅", "[0;7]"],
+        reponse: 1,
+        explication: "Pas de partie commune, donc ensemble vide."
+      },
+      {
+        type: "text",
+        titre: "10/14 - Cas sans recouvrement",
+        question: "A=[0;2] et B=[5;7]. Écris A ∪ B.",
+        attendus: ["[0;2]∪[5;7]", "[0;2] u [5;7]", "[0;2]u[5;7]"],
+        explication: "Les deux intervalles restent séparés."
+      },
+      {
+        type: "qcm",
+        titre: "11/14 - Vie réelle",
+        question: "Cinéma: tarif enfant pour âge x dans [6;12[. Un enfant de 12 ans paie ce tarif ?",
+        choix: ["Oui", "Non"],
+        reponse: 1,
+        explication: "12 est exclu, donc non."
+      },
+      {
+        type: "text",
+        titre: "12/14 - Vie réelle",
+        question: "Piscine: bassin junior autorisé pour x dans [8;14]. Un enfant de 8 ans est autorisé ? (réponds oui/non)",
+        attendus: ["oui"],
+        explication: "8 est inclus grâce au crochet fermé [."
+      },
+      {
+        type: "qcm",
+        titre: "13/14 - Synthèse",
+        question: "A=[-3;1] et B=[1;6]. A ∩ B vaut...",
+        choix: ["{1}", "[-3;6]", "∅"],
+        reponse: 0,
+        explication: "Le seul point commun est 1."
+      },
+      {
+        type: "text",
+        titre: "14/14 - Synthèse",
+        question: "A=[-3;1] et B=[1;6]. Écris A ∪ B.",
+        attendus: ["[-3;6]"],
+        explication: "Les intervalles se touchent en 1 (inclus), donc tout fusionne."
+      }
+    ];
+
+    const qTitle = document.getElementById("q-title");
+    const qText = document.getElementById("q-text");
+    const qArea = document.getElementById("q-area");
+    const feedback = document.getElementById("feedback");
+    const checkBtn = document.getElementById("check");
+    const nextBtn = document.getElementById("next");
+    const pauseBtn = document.getElementById("pause");
+    const bar = document.getElementById("bar");
+    const stat = document.getElementById("stat");
+    const pauseBox = document.getElementById("pauseBox");
+
+    let i = 0;
+    let score = 0;
+    let validated = false;
+
+    function norm(v) {
+      return (v || "")
+        .toLowerCase()
+        .trim()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ")
+        .replace(/\s*;\s*/g, ";")
+        .replace(/\s*\[\s*/g, "[")
+        .replace(/\s*\]\s*/g, "]")
+        .replace(/\s*∪\s*/g, "∪")
+        .replace(/\s*u\s*/g, "u");
+    }
+
+    function encouragement() {
+      const pool = [
+        "Très bien, tu avances super.",
+        "Bravo, continue comme ça.",
+        "Excellent effort, on progresse.",
+        "Top, tu as compris cette étape."
+      ];
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function render() {
+      const ex = exercices[i];
+      validated = false;
+      qTitle.textContent = ex.titre;
+      qText.textContent = ex.question;
+      feedback.textContent = "";
+      feedback.className = "";
+      nextBtn.disabled = true;
+      pauseBox.style.display = "none";
+      pauseBox.textContent = "";
+
+      if (ex.type === "qcm") {
+        qArea.innerHTML = `<div class="choices">${ex.choix.map((c, idx) => `
+          <label class="choice"><input type="radio" name="rep" value="${idx}" /> <span>${c}</span></label>
+        `).join("")}</div>`;
+      } else {
+        qArea.innerHTML = `<input id="repText" type="text" placeholder="Écris ta réponse" />`;
+      }
+
+      bar.style.width = `${(i / exercices.length) * 100}%`;
+      stat.textContent = `Question ${i + 1}/${exercices.length} - Score ${score}`;
+    }
+
+    function check() {
+      if (validated) return;
+      const ex = exercices[i];
+      let ok = false;
+
+      if (ex.type === "qcm") {
+        const sel = document.querySelector('input[name="rep"]:checked');
+        if (!sel) {
+          feedback.textContent = "Choisis une réponse, puis valide.";
+          feedback.className = "bad";
+          return;
+        }
+        ok = Number(sel.value) === ex.reponse;
+      } else {
+        const value = norm(document.getElementById("repText").value);
+        ok = ex.attendus.some(a => value === norm(a));
+      }
+
+      validated = true;
+      nextBtn.disabled = false;
+
+      if (ok) {
+        score += 1;
+        feedback.textContent = `${encouragement()} ${ex.explication}`;
+        feedback.className = "ok";
+      } else {
+        feedback.textContent = `On reprend calmement: ${ex.explication}`;
+        feedback.className = "bad";
+      }
+
+      stat.textContent = `Question ${i + 1}/${exercices.length} - Score ${score}`;
+
+      if ((i + 1) % 4 === 0 && i + 1 < exercices.length) {
+        pauseBox.style.display = "block";
+        pauseBox.textContent = "Pause conseillée: respire 20 secondes. Clique 'Suivant' quand tu es prête.";
+      }
+    }
+
+    function next() {
+      if (!validated) return;
+      i += 1;
+      if (i >= exercices.length) {
+        qTitle.textContent = "Terminé";
+        qText.textContent = "Tu viens de finir ce niveau sur les intervalles. Très bon travail.";
+        qArea.innerHTML = `<div class="example">Résultat final: ${score}/${exercices.length}. Tu peux refaire pour progresser encore.</div>`;
+        feedback.textContent = "";
+        nextBtn.disabled = true;
+        checkBtn.disabled = true;
+        pauseBtn.disabled = true;
+        bar.style.width = "100%";
+        stat.textContent = `Score final: ${score}/${exercices.length}`;
+        return;
+      }
+      render();
+    }
+
+    pauseBtn.addEventListener("click", () => {
+      pauseBox.style.display = "block";
+      pauseBox.textContent = "Pause activée. Bois un verre d'eau, détends-toi, puis reprends quand tu veux.";
+    });
+
+    checkBtn.addEventListener("click", check);
+    nextBtn.addEventListener("click", next);
+
+    render();
+  </script>
+</body>
+</html>
