@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths Seconde - Niveau 3</title>
+    <style>
+        :root {
+            --primary: #8E44AD; /* Violet cosmique */
+            --accent: #F1C40F;  /* Jaune étoile */
+            --text: #2C3E50;
+            --bg: #F3E5F5;      /* Fond très clair */
+            --card: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Verdana', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text);
+            font-size: 18px;
+        }
+
+        .container {
+            background-color: var(--card);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        /* Aide visuelle style "Espace" */
+        .visual-aid {
+            margin: 20px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.6rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .symbol-large {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            background-color: white;
+            border: 3px solid var(--primary);
+            color: var(--text);
+            padding: 18px;
+            font-size: 1.2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .feedback.success { background-color: #D4EDDA; color: #155724; border: 2px solid #C3E6CB; }
+        .feedback.error { background-color: #F8D7DA; color: #721C24; border: 2px solid #F5C6CB; }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            height: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            margin-top: 20px;
+            width: 100%;
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="progress-container">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <div id="quiz-content">
+        <h1 id="q-title">Niveau 3 🚀</h1>
+        
+        <div id="visual" class="visual-aid">
+            <span class="symbol-large">∞</span>
+            <span>L'Infini</span>
+        </div>
+
+        <p id="q-text">Parfois, la route ne s'arrête jamais...</p>
+        
+        <div class="btn-group" id="options">
+            <button onclick="startGame()">Décoller !</button>
+        </div>
+    </div>
+
+    <div id="feedback" class="feedback"></div>
+    <button id="next-btn" class="nav-btn" onclick="nextQuestion()">Continuer ➡️</button>
+</div>
+
+<script>
+    const questions = [
+        {
+            title: "Vers le futur !",
+            text: "Quand on part vers la droite, vers les nombres très grands (1000, 1 million, 1 milliard...), ça ne s'arrête jamais.<br>On appelle ça <strong>Plus l'Infini</strong>.",
+            visual: "👉 +∞",
+            options: [
+                { text: "J'ai compris !", correct: true, feedback: "Super ! +∞ c'est tout au bout à droite." }
+            ]
+        },
+        {
+            title: "Vers le passé...",
+            text: "Si on part de l'autre côté, vers les nombres négatifs (-10, -1000...), ça ne s'arrête jamais non plus.<br>C'est <strong>Moins l'Infini</strong>.",
+            visual: "-∞ 👈",
+            options: [
+                { text: "C'est noté !", correct: true, feedback: "Parfait. -∞ c'est tout au bout à gauche." }
+            ]
+        },
+        {
+            title: "Peut-on l'attraper ?",
+            text: "Imagine que tu essaies d'attraper l'infini. Est-ce que tu peux le mettre dans ta poche ?",
+            visual: "🏃‍♀️💨 ... ∞",
+            options: [
+                { text: "Oui, je l'attrape", correct: false, feedback: "Impossible ! Si tu avances, l'infini est toujours plus loin. On ne peut jamais l'atteindre." },
+                { text: "Non, c'est impossible 🚫", correct: true, feedback: "Exactement ! L'infini n'est pas un nombre, c'est une direction. On ne peut jamais le toucher." }
+            ]
+        },
+        {
+            title: "La Règle d'Or ✨",
+            text: "Comme on ne peut jamais attraper l'infini, <strong>le crochet est TOUJOURS OUVERT</strong> du côté de l'infini.<br>Le crochet lui tourne le dos.",
+            visual: "] -∞ ; ...   ou   ... ; +∞ [",
+            options: [
+                { text: "Le crochet rejette toujours l'infini ✅", correct: true, feedback: "C'est la règle la plus importante ! ] -∞ et +∞ [" },
+                { text: "Le crochet peut le prendre", correct: false, feedback: "Non, jamais ! Le crochet ne peut pas fermer la porte sur l'infini, c'est trop grand." }
+            ]
+        },
+        {
+            title: "À toi de jouer",
+            text: "On veut dire 'tous les nombres plus grands que 3'. Donc on part de 3 et on va jusqu'à l'infini.<br>Lequel est correct ?",
+            visual: "De 3 ➡️ +∞",
+            options: [
+                { text: "[ 3 ; +∞ [ ✅", correct: true, feedback: "Bravo ! On part de 3, et on va vers +∞ (avec le crochet ouvert !)." },
+                { text: "[ 3 ; +∞ ] ❌", correct: false, feedback: "Aïe ! Regarde le crochet à la fin. Tu as essayé de fermer le crochet sur l'infini (]). C'est interdit !" }
+            ]
+        }
+    ];
+
+    let current = 0;
+
+    function startGame() {
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[current];
+        document.getElementById('q-title').innerHTML = q.title;
+        document.getElementById('q-text').innerHTML = q.text;
+        
+        // Mise à jour visuelle dynamique
+        const vis = document.getElementById('visual');
+        if(q.visual.includes("Large")) {
+             vis.innerHTML = q.visual;
+        } else {
+             vis.innerHTML = `<span class="symbol-large" style="font-size:2.5rem">${q.visual}</span>`;
+        }
+        
+        
+        const opts = document.getElementById('options');
+        opts.innerHTML = '';
+        
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.innerHTML = opt.text;
+            btn.onclick = () => check(opt, btn);
+            opts.appendChild(btn);
+        });
+
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        updateProgress();
+    }
+
+    function check(opt, btn) {
+        const fb = document.getElementById('feedback');
+        fb.style.display = 'block';
+        fb.innerHTML = opt.feedback;
+        fb.className = 'feedback ' + (opt.correct ? 'success' : 'error');
+
+        const allBtns = document.querySelectorAll('#options button');
+        allBtns.forEach(b => b.disabled = true);
+
+        if(opt.correct) {
+            btn.style.backgroundColor = "#D4EDDA";
+            document.getElementById('next-btn').style.display = 'block';
+            document.getElementById('next-btn').innerText = "Continuer ➡️";
+            document.getElementById('next-btn').onclick = nextQuestion;
+        } else {
+            btn.style.backgroundColor = "#F8D7DA";
+            setTimeout(() => {
+                document.getElementById('next-btn').style.display = 'block';
+                document.getElementById('next-btn').innerText = "Réessayer ↺";
+                document.getElementById('next-btn').onclick = showQuestion;
+            }, 1000);
+        }
+    }
+
+    function nextQuestion() {
+        current++;
+        if(current < questions.length) {
+            showQuestion();
+        } else {
+            finish();
+        }
+    }
+
+    function updateProgress() {
+        const pct = (current / questions.length) * 100;
+        document.getElementById('progress').style.width = pct + '%';
+    }
+
+    function finish() {
+        document.getElementById('progress').style.width = '100%';
+        document.getElementById('quiz-content').innerHTML = `
+            <h1>🎉 Mission Réussie !</h1>
+            <p>Tu maîtrises l'infini !</p>
+            <div class="visual-aid" style="font-size:1.2rem">
+                Rappel :<br>
+                Jamais de crochet fermé sur ∞
+            </div>
+            <a href="maths-intervalles-4.html" style="text-decoration:none;">
+                <button style="background:var(--primary); color:#fff; border:none; margin-top:20px;">
+                    Niveau 4 : La Rencontre (Intersection) 🔴
+                </button>
+            </a>
+        `;
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
