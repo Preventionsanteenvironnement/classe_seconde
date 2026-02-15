@@ -117,7 +117,13 @@
       { id: "cours", label: "📘 Cours" },
       { id: "exo1", label: "📝 Exercice 1" },
       { id: "exo2", label: "📝 Exercice 2" },
+      { id: "exo3", label: "📝 Exercice 3" },
+      { id: "exo4", label: "📝 Exercice 4" },
+      { id: "exo5", label: "📝 Exercice 5" },
+      { id: "exo6", label: "📝 Exercice 6" },
+      { id: "eval", label: "🧪 Evaluation" },
       { id: "corrige", label: "✅ Corrige" },
+      { id: "bonus", label: "⭐ Bonus" },
     ];
 
     const fallback = slots.map((s) => ({ ...s, href: "" }));

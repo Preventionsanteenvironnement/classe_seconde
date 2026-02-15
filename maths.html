@@ -296,8 +296,32 @@
           <input id="mathLinkExo2" type="text" placeholder="ex: devoirs/maths_exercice2.html" />
         </div>
         <div class="link-item">
+          <label for="mathLinkExo3">📝 Exercice 3</label>
+          <input id="mathLinkExo3" type="text" placeholder="ex: devoirs/maths_exercice3.html" />
+        </div>
+        <div class="link-item">
+          <label for="mathLinkExo4">📝 Exercice 4</label>
+          <input id="mathLinkExo4" type="text" placeholder="ex: devoirs/maths_exercice4.html" />
+        </div>
+        <div class="link-item">
+          <label for="mathLinkExo5">📝 Exercice 5</label>
+          <input id="mathLinkExo5" type="text" placeholder="ex: devoirs/maths_exercice5.html" />
+        </div>
+        <div class="link-item">
+          <label for="mathLinkExo6">📝 Exercice 6</label>
+          <input id="mathLinkExo6" type="text" placeholder="ex: devoirs/maths_exercice6.html" />
+        </div>
+        <div class="link-item">
+          <label for="mathLinkEval">🧪 Evaluation</label>
+          <input id="mathLinkEval" type="text" placeholder="ex: devoirs/maths_evaluation.html" />
+        </div>
+        <div class="link-item">
           <label for="mathLinkCorrige">✅ Corrigé</label>
           <input id="mathLinkCorrige" type="text" placeholder="ex: devoirs/maths_corrige.html" />
+        </div>
+        <div class="link-item">
+          <label for="mathLinkBonus">⭐ Bonus</label>
+          <input id="mathLinkBonus" type="text" placeholder="ex: devoirs/maths_bonus.html" />
         </div>
       </div>
       <div class="links-actions">
@@ -575,7 +599,13 @@
         { id: "cours", label: "📘 Cours" },
         { id: "exo1", label: "📝 Exercice 1" },
         { id: "exo2", label: "📝 Exercice 2" },
-        { id: "corrige", label: "✅ Corrige" }
+        { id: "exo3", label: "📝 Exercice 3" },
+        { id: "exo4", label: "📝 Exercice 4" },
+        { id: "exo5", label: "📝 Exercice 5" },
+        { id: "exo6", label: "📝 Exercice 6" },
+        { id: "eval", label: "🧪 Evaluation" },
+        { id: "corrige", label: "✅ Corrige" },
+        { id: "bonus", label: "⭐ Bonus" }
       ];
       const entries = labels
         .map((item) => ({ ...item, href: values[item.id] || "" }))
@@ -595,7 +625,7 @@
 
     function initMathLinks() {
       const key = "classe_seconde_links_maths";
-      let data = { cours: "", exo1: "", exo2: "", corrige: "" };
+      let data = { cours: "", exo1: "", exo2: "", exo3: "", exo4: "", exo5: "", exo6: "", eval: "", corrige: "", bonus: "" };
       try {
         const raw = localStorage.getItem(key);
         if (raw) {
@@ -609,7 +639,13 @@
       document.getElementById("mathLinkCours").value = data.cours || "";
       document.getElementById("mathLinkExo1").value = data.exo1 || "";
       document.getElementById("mathLinkExo2").value = data.exo2 || "";
+      document.getElementById("mathLinkExo3").value = data.exo3 || "";
+      document.getElementById("mathLinkExo4").value = data.exo4 || "";
+      document.getElementById("mathLinkExo5").value = data.exo5 || "";
+      document.getElementById("mathLinkExo6").value = data.exo6 || "";
+      document.getElementById("mathLinkEval").value = data.eval || "";
       document.getElementById("mathLinkCorrige").value = data.corrige || "";
+      document.getElementById("mathLinkBonus").value = data.bonus || "";
       renderMathLinks(data);
 
       document.getElementById("saveLinks").addEventListener("click", () => {
@@ -617,7 +653,13 @@
           cours: document.getElementById("mathLinkCours").value.trim(),
           exo1: document.getElementById("mathLinkExo1").value.trim(),
           exo2: document.getElementById("mathLinkExo2").value.trim(),
-          corrige: document.getElementById("mathLinkCorrige").value.trim()
+          exo3: document.getElementById("mathLinkExo3").value.trim(),
+          exo4: document.getElementById("mathLinkExo4").value.trim(),
+          exo5: document.getElementById("mathLinkExo5").value.trim(),
+          exo6: document.getElementById("mathLinkExo6").value.trim(),
+          eval: document.getElementById("mathLinkEval").value.trim(),
+          corrige: document.getElementById("mathLinkCorrige").value.trim(),
+          bonus: document.getElementById("mathLinkBonus").value.trim()
         };
         localStorage.setItem(key, JSON.stringify(nextData));
         renderMathLinks(nextData);
@@ -629,8 +671,14 @@
         document.getElementById("mathLinkCours").value = "";
         document.getElementById("mathLinkExo1").value = "";
         document.getElementById("mathLinkExo2").value = "";
+        document.getElementById("mathLinkExo3").value = "";
+        document.getElementById("mathLinkExo4").value = "";
+        document.getElementById("mathLinkExo5").value = "";
+        document.getElementById("mathLinkExo6").value = "";
+        document.getElementById("mathLinkEval").value = "";
         document.getElementById("mathLinkCorrige").value = "";
-        renderMathLinks({ cours: "", exo1: "", exo2: "", corrige: "" });
+        document.getElementById("mathLinkBonus").value = "";
+        renderMathLinks({ cours: "", exo1: "", exo2: "", exo3: "", exo4: "", exo5: "", exo6: "", eval: "", corrige: "", bonus: "" });
         document.getElementById("linksStatus").textContent = "Liens reinitialises.";
       });
     }
