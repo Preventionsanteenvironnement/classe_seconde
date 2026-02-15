@@ -88,6 +88,73 @@
       margin-top: 12px;
     }
 
+    .links-manager {
+      margin-top: 12px;
+      background: var(--card);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .links-manager h2 {
+      margin: 0 0 6px;
+      font-family: "Baloo 2", cursive;
+      font-size: 1.2rem;
+    }
+
+    .links-manager p {
+      margin: 0 0 10px;
+      font-weight: 700;
+    }
+
+    .link-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .link-item {
+      display: grid;
+      gap: 6px;
+    }
+
+    .link-item label {
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .links-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    #saveLinks { background: linear-gradient(120deg, #2ebd88, #73d8b3); color: #053b27; }
+    #resetLinks { background: linear-gradient(120deg, #ffd49f, #ffeaad); color: #5e4000; }
+
+    .links-list {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .links-list a {
+      text-decoration: none;
+      font-weight: 800;
+      color: #0f6fd2;
+      border: 2px solid #d6e5f5;
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #fff;
+    }
+
+    #linksStatus {
+      margin-top: 8px;
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
     .small { font-size: 0.95rem; line-height: 1.45; }
 
     .example {
@@ -211,6 +278,35 @@
       On avance très progressivement. Objectif: comprendre <strong>[a;b[</strong>,
       <strong>l'intersection (∩)</strong> et <strong>la réunion (∪)</strong> avec des exemples concrets.
     </p>
+
+    <section class="links-manager">
+      <h2>Liens HTML rapides (Maths)</h2>
+      <p>Colle tes liens puis clique "Enregistrer".</p>
+      <div class="link-grid">
+        <div class="link-item">
+          <label for="mathLinkCours">📘 Cours</label>
+          <input id="mathLinkCours" type="text" placeholder="ex: devoirs/maths_cours.html" />
+        </div>
+        <div class="link-item">
+          <label for="mathLinkExo1">📝 Exercice 1</label>
+          <input id="mathLinkExo1" type="text" placeholder="ex: devoirs/maths_exercice1.html" />
+        </div>
+        <div class="link-item">
+          <label for="mathLinkExo2">📝 Exercice 2</label>
+          <input id="mathLinkExo2" type="text" placeholder="ex: devoirs/maths_exercice2.html" />
+        </div>
+        <div class="link-item">
+          <label for="mathLinkCorrige">✅ Corrigé</label>
+          <input id="mathLinkCorrige" type="text" placeholder="ex: devoirs/maths_corrige.html" />
+        </div>
+      </div>
+      <div class="links-actions">
+        <button id="saveLinks" type="button">Enregistrer les liens</button>
+        <button id="resetLinks" type="button">Reinitialiser</button>
+      </div>
+      <div id="mathLinksList" class="links-list"></div>
+      <div id="linksStatus"></div>
+    </section>
 
     <section class="card small">
       <strong>Image concrète:</strong> pense à une rue avec des maisons numérotées.
@@ -472,6 +568,74 @@
     checkBtn.addEventListener("click", check);
     nextBtn.addEventListener("click", next);
 
+    function renderMathLinks(values) {
+      const list = document.getElementById("mathLinksList");
+      const status = document.getElementById("linksStatus");
+      const labels = [
+        { id: "cours", label: "📘 Cours" },
+        { id: "exo1", label: "📝 Exercice 1" },
+        { id: "exo2", label: "📝 Exercice 2" },
+        { id: "corrige", label: "✅ Corrige" }
+      ];
+      const entries = labels
+        .map((item) => ({ ...item, href: values[item.id] || "" }))
+        .filter((item) => item.href);
+
+      if (!entries.length) {
+        list.innerHTML = "";
+        status.textContent = "Aucun lien enregistre pour le moment.";
+        return;
+      }
+
+      list.innerHTML = entries
+        .map((item) => `<a href="${item.href}">${item.label}</a>`)
+        .join("");
+      status.textContent = `${entries.length} lien(s) pret(s).`;
+    }
+
+    function initMathLinks() {
+      const key = "classe_seconde_links_maths";
+      let data = { cours: "", exo1: "", exo2: "", corrige: "" };
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") {
+            data = { ...data, ...parsed };
+          }
+        }
+      } catch (_) {}
+
+      document.getElementById("mathLinkCours").value = data.cours || "";
+      document.getElementById("mathLinkExo1").value = data.exo1 || "";
+      document.getElementById("mathLinkExo2").value = data.exo2 || "";
+      document.getElementById("mathLinkCorrige").value = data.corrige || "";
+      renderMathLinks(data);
+
+      document.getElementById("saveLinks").addEventListener("click", () => {
+        const nextData = {
+          cours: document.getElementById("mathLinkCours").value.trim(),
+          exo1: document.getElementById("mathLinkExo1").value.trim(),
+          exo2: document.getElementById("mathLinkExo2").value.trim(),
+          corrige: document.getElementById("mathLinkCorrige").value.trim()
+        };
+        localStorage.setItem(key, JSON.stringify(nextData));
+        renderMathLinks(nextData);
+        document.getElementById("linksStatus").textContent = "Liens enregistres.";
+      });
+
+      document.getElementById("resetLinks").addEventListener("click", () => {
+        localStorage.removeItem(key);
+        document.getElementById("mathLinkCours").value = "";
+        document.getElementById("mathLinkExo1").value = "";
+        document.getElementById("mathLinkExo2").value = "";
+        document.getElementById("mathLinkCorrige").value = "";
+        renderMathLinks({ cours: "", exo1: "", exo2: "", corrige: "" });
+        document.getElementById("linksStatus").textContent = "Liens reinitialises.";
+      });
+    }
+
+    initMathLinks();
     render();
   </script>
 </body>
