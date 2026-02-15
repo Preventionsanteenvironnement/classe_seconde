@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths Seconde - Niveau 4</title>
+    <style>
+        :root {
+            --primary: #E91E63; /* Rose/Rouge */
+            --secondary: #2196F3; /* Bleu */
+            --mixed: #9C27B0;   /* Violet (Mélange) */
+            --bg: #FAFAFA;
+            --text: #333;
+            --card: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Verdana', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text);
+            font-size: 18px;
+        }
+
+        .container {
+            background-color: var(--card);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--mixed);
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        /* Aide visuelle pour l'intersection */
+        .visual-aid {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .bars-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .bar {
+            height: 20px;
+            border-radius: 10px;
+            width: 80%;
+            position: relative;
+            opacity: 0.7;
+        }
+
+        .bar-red { background: var(--primary); width: 60%; align-self: flex-start; }
+        .bar-blue { background: var(--secondary); width: 60%; align-self: flex-end; }
+        
+        /* Zone commune */
+        .overlap-zone {
+            height: 20px;
+            background: var(--mixed);
+            width: 20%;
+            border-radius: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(156, 39, 176, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(156, 39, 176, 0); }
+        }
+
+        .symbol-large {
+            font-size: 3rem;
+            color: var(--mixed);
+            font-weight: 900;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            background-color: white;
+            border: 3px solid var(--mixed);
+            color: var(--text);
+            padding: 18px;
+            font-size: 1.2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.2s;
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .feedback.success { background-color: #E1BEE7; color: #4A148C; border: 2px solid #BA68C8; }
+        .feedback.error { background-color: #FFCDD2; color: #B71C1C; border: 2px solid #EF5350; }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            height: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--mixed);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .nav-btn {
+            background-color: var(--mixed);
+            color: white;
+            border: none;
+            margin-top: 20px;
+            width: 100%;
+            display: none;
+        }
+        
+        .color-red { color: var(--primary); }
+        .color-blue { color: var(--secondary); }
+        .color-mixed { color: var(--mixed); font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="progress-container">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <div id="quiz-content">
+        <h1 id="q-title">Niveau 4 🟣</h1>
+        
+        <div id="visual" class="visual-aid">
+            <span class="symbol-large">∩</span>
+            <span>L'Intersection</span>
+            <div style="font-size: 0.9rem; color: #666; margin-top:5px;">(Comme un pont)</div>
+        </div>
+
+        <p id="q-text">Quand deux chemins se croisent...</p>
+        
+        <div class="btn-group" id="options">
+            <button onclick="startGame()">Découvrir le mélange !</button>
+        </div>
+    </div>
+
+    <div id="feedback" class="feedback"></div>
+    <button id="next-btn" class="nav-btn" onclick="nextQuestion()">Continuer ➡️</button>
+</div>
+
+<script>
+    const questions = [
+        {
+            title: "Le Mélange",
+            text: "Imagine que tu colories une zone en <span class='color-red'>ROUGE</span> et une autre en <span class='color-blue'>BLEU</span>.<br>L'<strong>Intersection</strong>, c'est l'endroit où les deux couleurs se mélangent (le VIOLET).",
+            visual: `<div class="bars-container">
+                        <div class="bar bar-red">Zone Rouge</div>
+                        <div class="bar bar-blue">Zone Bleue</div>
+                        <div class="overlap-zone"></div>
+                        <div style="font-size:0.8rem">Zone Commune (Intersection)</div>
+                     </div>`,
+            options: [
+                { text: "C'est la zone commune aux deux ✅", correct: true, feedback: "Exactement ! C'est l'endroit où tu es dans les DEUX zones en même temps." },
+                { text: "C'est tout le coloriage", correct: false, feedback: "Non, ça c'est la Réunion (on verra après). L'intersection, c'est seulement le petit morceau au milieu où ça se touche." }
+            ]
+        },
+        {
+            title: "Le Symbole",
+            text: "Le symbole de l'intersection ressemble à un <strong>PONT</strong> ou une porte.<br>Regarde bien : <span class='symbol-large'>∩</span>",
+            visual: "<span class='symbol-large'>A ∩ B</span>",
+            options: [
+                { text: "C'est le U à l'envers (Pont) ∩", correct: true, feedback: "Bravo ! Le pont relie les deux rives." },
+                { text: "C'est le U à l'endroit (Bol) ∪", correct: false, feedback: "Non, le U (comme un bol) c'est pour l'Union. Ici on veut le pont !" }
+            ]
+        },
+        {
+            title: "Exercice Pratique",
+            text: "Intervalle 1 : de <strong>0 à 10</strong>.<br>Intervalle 2 : de <strong>5 à 15</strong>.<br>Où est-ce que les deux sont présents en même temps ?",
+            visual: "0---------<span class='color-mixed'>5=====10</span>---------15",
+            options: [
+                { text: "[ 0 ; 15 ]", correct: false, feedback: "Ça c'est trop grand ! Entre 0 et 5, l'intervalle 2 n'est pas là." },
+                { text: "[ 5 ; 10 ] ✅", correct: true, feedback: "Parfait ! Entre 5 et 10, tu es bien dans les deux intervalles à la fois." }
+            ]
+        },
+        {
+            title: "Le mot magique",
+            text: "Pour être dans l'intersection, il faut être dans l'intervalle A ____ dans l'intervalle B.",
+            visual: "A ∩ B",
+            options: [
+                { text: "OU", correct: false, feedback: "Non, 'OU' c'est pour l'Union. Si tu es dans l'un OU l'autre." },
+                { text: "ET ✅", correct: true, feedback: "C'est ça ! Il faut être dans A ET dans B. C'est plus strict." }
+            ]
+        },
+        {
+            title: "Cas difficile !",
+            text: "Intervalle A : [-10 ; 2]<br>Intervalle B : [5 ; 10]<br>Est-ce qu'ils se touchent ?",
+            visual: "[-10 -- 2] ...... [5 -- 10]",
+            options: [
+                { text: "Oui, ils se touchent", correct: false, feedback: "Regarde bien le dessin. Il y a un trou entre 2 et 5. Ils ne se touchent pas !" },
+                { text: "Non, ensemble vide ∅ ✅", correct: true, feedback: "Excellent ! Ils ne se croisent jamais. On écrit ∅ (ensemble vide)." }
+            ]
+        }
+    ];
+
+    let current = 0;
+
+    function startGame() {
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[current];
+        document.getElementById('q-title').innerHTML = q.title;
+        document.getElementById('q-text').innerHTML = q.text;
+        
+        // Si le visuel n'est pas HTML complexe, on le met en grand, sinon on insère le HTML
+        if(q.visual.includes("<div")) {
+             document.getElementById('visual').innerHTML = q.visual;
+        } else {
+             document.getElementById('visual').innerHTML = `<div style="font-size:1.5rem">${q.visual}</div>`;
+        }
+        
+        const opts = document.getElementById('options');
+        opts.innerHTML = '';
+        
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.innerHTML = opt.text;
+            btn.onclick = () => check(opt, btn);
+            opts.appendChild(btn);
+        });
+
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        updateProgress();
+    }
+
+    function check(opt, btn) {
+        const fb = document.getElementById('feedback');
+        fb.style.display = 'block';
+        fb.innerHTML = opt.feedback;
+        fb.className = 'feedback ' + (opt.correct ? 'success' : 'error');
+
+        const allBtns = document.querySelectorAll('#options button');
+        allBtns.forEach(b => b.disabled = true);
+
+        if(opt.correct) {
+            btn.style.backgroundColor = "#E1BEE7"; // Violet clair
+            btn.style.borderColor = "#8E24AA";
+            document.getElementById('next-btn').style.display = 'block';
+            document.getElementById('next-btn').innerText = "Continuer ➡️";
+            document.getElementById('next-btn').onclick = nextQuestion;
+        } else {
+            btn.style.backgroundColor = "#FFCDD2";
+            btn.style.borderColor = "#D32F2F";
+            setTimeout(() => {
+                document.getElementById('next-btn').style.display = 'block';
+                document.getElementById('next-btn').innerText = "Réessayer ↺";
+                document.getElementById('next-btn').onclick = showQuestion;
+            }, 1500);
+        }
+    }
+
+    function nextQuestion() {
+        current++;
+        if(current < questions.length) {
+            showQuestion();
+        } else {
+            finish();
+        }
+    }
+
+    function updateProgress() {
+        const pct = (current / questions.length) * 100;
+        document.getElementById('progress').style.width = pct + '%';
+    }
+
+    function finish() {
+        document.getElementById('progress').style.width = '100%';
+        document.getElementById('quiz-content').innerHTML = `
+            <h1>🎉 Niveau 4 Terminé !</h1>
+            <p>Tu as trouvé le point de rencontre !</p>
+            <div class="visual-aid">
+                Rappel :<br>
+                Intersection = Zone Commune<br>
+                Symbole = ∩ (Pont)
+            </div>
+            <a href="maths-intervalles-5.html" style="text-decoration:none;">
+                <button style="background:var(--secondary); color:#fff; border:none; margin-top:20px;">
+                    Dernier Niveau : La Réunion 🔵+🔴
+                </button>
+            </a>
+        `;
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

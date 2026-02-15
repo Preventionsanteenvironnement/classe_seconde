@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths Seconde - Niveau 5</title>
+    <style>
+        :root {
+            --primary: #FF9800; /* Orange vibrant */
+            --secondary: #00BCD4; /* Cyan */
+            --union: #4CAF50;   /* Vert (Total) */
+            --bg: #FFF3E0;
+            --text: #333;
+            --card: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Verdana', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text);
+            font-size: 18px;
+        }
+
+        .container {
+            background-color: var(--card);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        /* Aide visuelle : Le Bol */
+        .visual-aid {
+            margin: 20px 0;
+            padding: 20px;
+            background: #fff;
+            border: 4px solid var(--primary);
+            border-radius: 0 0 50px 50px; /* Forme de bol */
+            border-top: none;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 100px;
+        }
+
+        .symbol-large {
+            font-size: 3.5rem;
+            color: var(--primary);
+            font-weight: 900;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            background-color: white;
+            border: 3px solid var(--primary);
+            color: var(--text);
+            padding: 18px;
+            font-size: 1.2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.2s;
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .feedback.success { background-color: #E8F5E9; color: #2E7D32; border: 2px solid #A5D6A7; }
+        .feedback.error { background-color: #FFEBEE; color: #C62828; border: 2px solid #EF9A9A; }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            height: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            margin-top: 20px;
+            width: 100%;
+            display: none;
+        }
+
+        /* Confetti pour la fin */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: fall linear forwards;
+        }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="progress-container">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <div id="quiz-content">
+        <h1 id="q-title">Niveau 5 🔵🔴</h1>
+        
+        <div id="visual" class="visual-aid">
+            <span class="symbol-large">∪</span>
+            <span>La Réunion</span>
+            <div style="font-size: 0.9rem; color: #666;">(Le Bol qui ramasse tout)</div>
+        </div>
+
+        <p id="q-text">Prête pour le grand rassemblement ?</p>
+        
+        <div class="btn-group" id="options">
+            <button onclick="startGame()">C'est parti ! 🏆</button>
+        </div>
+    </div>
+
+    <div id="feedback" class="feedback"></div>
+    <button id="next-btn" class="nav-btn" onclick="nextQuestion()">Continuer ➡️</button>
+</div>
+
+<script>
+    const questions = [
+        {
+            title: "Tout le monde vient",
+            text: "L'intersection (∩) était stricte (il fallait les deux).<br>La <strong>Réunion (∪)</strong> est gentille : elle prend tout le monde.<br>Si tu es dans A <strong>OU</strong> dans B, tu es invité !",
+            visual: "A ∪ B = Tout A + Tout B",
+            options: [
+                { text: "C'est l'addition de tout ! ✅", correct: true, feedback: "Exactement ! On met tout dans le même sac." }
+            ]
+        },
+        {
+            title: "Le Symbole",
+            text: "Le symbole <strong>∪</strong> ressemble à un bol (ou une coupe).<br>Il est ouvert vers le haut pour récolter un maximum de choses.",
+            visual: "<span class='symbol-large'>∪</span>",
+            options: [
+                { text: "U comme Union", correct: true, feedback: "Facile, non ? U pour Union." },
+                { text: "U comme un pont", correct: false, feedback: "Non, le pont (∩) c'est l'intersection. Ici c'est le bol !" }
+            ]
+        },
+        {
+            title: "La Fusion !",
+            text: "Regarde bien :<br>Zone 1 : [0 ; 5]<br>Zone 2 : [2 ; 8]<br>Si on met tout ensemble, ça commence où et ça finit où ?",
+            visual: "0-----5<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2-------8",
+            options: [
+                { text: "[ 2 ; 5 ]", correct: false, feedback: "Ça c'est l'intersection (le petit bout commun). La Réunion veut TOUT !" },
+                { text: "[ 0 ; 8 ] ✅", correct: true, feedback: "Bravo ! On commence au début du premier (0) et on va jusqu'à la fin du deuxième (8)." }
+            ]
+        },
+        {
+            title: "Et si ça ne se touche pas ?",
+            text: "Zone 1 : [0 ; 2]<br>Zone 2 : [10 ; 12]<br>Il y a un grand trou au milieu. On ne peut pas les coller.",
+            visual: "[0-2] ...... [10-12]",
+            options: [
+                { text: "On écrit [0 ; 12]", correct: false, feedback: "Impossible ! Si tu écris [0 ; 12], tu invites aussi le 5, le 6... qui ne sont pas là." },
+                { text: "[0 ; 2] ∪ [10 ; 12] ✅", correct: true, feedback: "Excellent ! On garde le symbole ∪ au milieu pour dire 'Ça ET ça'." }
+            ]
+        },
+        {
+            title: "Question Piège",
+            text: "Dans quel cas utilise-t-on le mot <strong>OU</strong> en maths ?",
+            visual: "Intersection ou Réunion ?",
+            options: [
+                { text: "Pour l'Intersection ∩", correct: false, feedback: "Non, Intersection c'est 'ET' (il faut les deux)." },
+                { text: "Pour la Réunion ∪ ✅", correct: true, feedback: "Oui ! Réunion = OU. (Fromage OU Dessert ? En maths, tu prends les deux !)" }
+            ]
+        }
+    ];
+
+    let current = 0;
+
+    function startGame() {
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[current];
+        document.getElementById('q-title').innerHTML = q.title;
+        document.getElementById('q-text').innerHTML = q.text;
+        
+        if(!q.visual.includes("<span") && !q.visual.includes("<br>")) {
+             document.getElementById('visual').innerHTML = `<span style="font-size:2rem">${q.visual}</span>`;
+        } else {
+             document.getElementById('visual').innerHTML = q.visual;
+        }
+        
+        const opts = document.getElementById('options');
+        opts.innerHTML = '';
+        
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.innerHTML = opt.text;
+            btn.onclick = () => check(opt, btn);
+            opts.appendChild(btn);
+        });
+
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        updateProgress();
+    }
+
+    function check(opt, btn) {
+        const fb = document.getElementById('feedback');
+        fb.style.display = 'block';
+        fb.innerHTML = opt.feedback;
+        fb.className = 'feedback ' + (opt.correct ? 'success' : 'error');
+
+        const allBtns = document.querySelectorAll('#options button');
+        allBtns.forEach(b => b.disabled = true);
+
+        if(opt.correct) {
+            btn.style.backgroundColor = "#E8F5E9";
+            btn.style.borderColor = "#4CAF50";
+            document.getElementById('next-btn').style.display = 'block';
+            document.getElementById('next-btn').innerText = "Continuer ➡️";
+            document.getElementById('next-btn').onclick = nextQuestion;
+            if(current === questions.length - 1) triggerConfetti();
+        } else {
+            btn.style.backgroundColor = "#FFEBEE";
+            btn.style.borderColor = "#F44336";
+            setTimeout(() => {
+                document.getElementById('next-btn').style.display = 'block';
+                document.getElementById('next-btn').innerText = "Réessayer ↺";
+                document.getElementById('next-btn').onclick = showQuestion;
+            }, 1500);
+        }
+    }
+
+    function nextQuestion() {
+        current++;
+        if(current < questions.length) {
+            showQuestion();
+        } else {
+            finish();
+        }
+    }
+
+    function updateProgress() {
+        const pct = (current / questions.length) * 100;
+        document.getElementById('progress').style.width = pct + '%';
+    }
+
+    function finish() {
+        document.getElementById('progress').style.width = '100%';
+        document.getElementById('quiz-content').innerHTML = `
+            <h1>🎉 CHAPITRE TERMINÉ ! 🎉</h1>
+            <p>Tu as réussi les 5 niveaux !</p>
+            <div class="visual-aid" style="border-radius:20px; border:none; background:#E8F5E9;">
+                Tu maitrises :<br>
+                ✅ Intervalles [ ]<br>
+                ✅ Infini ∞<br>
+                ✅ Intersection ∩<br>
+                ✅ Réunion ∪
+            </div>
+            <p>Tu peux être fière de toi. ❤️</p>
+            <a href="index.html" style="text-decoration:none;">
+                <button style="background:var(--secondary); color:#fff; border:none; margin-top:20px;">
+                    Retour à l'accueil 🏠
+                </button>
+            </a>
+        `;
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        triggerConfetti();
+        setInterval(triggerConfetti, 2000); // Pluie de confettis continue
+    }
+
+    function triggerConfetti() {
+        for(let i=0; i<50; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 5000);
+        }
+    }
+</script>
+
+</body>
+</html>

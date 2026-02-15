@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths Seconde - Niveau 1</title>
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --success: #4CAF50;
+            --error: #FF5252;
+            --bg: #F0F4F8;
+            --card: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background-color: var(--card);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .visual-aid {
+            margin: 20px 0;
+            padding: 15px;
+            background: #eef2ff;
+            border-radius: 10px;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            background-color: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .feedback.success { background-color: #e8f5e9; color: var(--success); }
+        .feedback.error { background-color: #ffebee; color: var(--error); }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--success);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .next-btn {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .next-btn:hover {
+            background-color: #45a049;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Confetti effect helper */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: fall linear forwards;
+        }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <div id="quiz-content">
+        <h1 id="question-title">Bienvenue ! 👋</h1>
+        <div id="visual-container" class="visual-aid">
+            Prête pour l'aventure ?
+        </div>
+        <p id="question-text">On va apprendre les maths sans stress. Ici, on prend notre temps.</p>
+        
+        <div class="btn-group" id="options">
+            <button onclick="startGame()">C'est parti ! 🚀</button>
+        </div>
+    </div>
+
+    <div id="feedback-area" class="feedback"></div>
+    <button id="next-q-btn" class="next-btn" onclick="nextQuestion()">Question Suivante ➡️</button>
+</div>
+
+<script>
+    const questions = [
+        {
+            title: "Imagine une route...",
+            text: "Imagine une longue route avec des bornes kilométriques. Tu as le droit de marcher <strong>entre le km 2 et le km 5</strong>.",
+            visual: "Route : [ 0 -- 1 -- <strong>2 -- 3 -- 4 -- 5</strong> -- 6 -- 7 ]",
+            options: [
+                { text: "Oui, c'est clair !", correct: true, feedback: "Super ! On commence doucement. 😊" }
+            ]
+        },
+        {
+            title: "Est-ce que tu es dedans ?",
+            text: "Ta zone autorisée est toujours <strong>entre 2 et 5</strong>. Si tu te mets sur le <strong>numéro 4</strong>, est-ce que tu es dans la zone autorisée ?",
+            visual: "Zone autorisée : 2 à 5<br>Toi : à 4",
+            options: [
+                { text: "Oui, je suis dedans 👍", correct: true, feedback: "Exactement ! 4 est bien entre 2 et 5." },
+                { text: "Non, je suis dehors 👎", correct: false, feedback: "Regarde bien la route. 4 est après le 2 et avant le 5. Donc tu es bien dedans !" }
+            ]
+        },
+        {
+            title: "Attention, ne sors pas !",
+            text: "Ta zone est toujours <strong>entre 2 et 5</strong>. Si tu vas sur le <strong>numéro 8</strong>, est-ce que c'est bon ?",
+            visual: "Zone autorisée : 2 à 5<br>Toi : à 8",
+            options: [
+                { text: "Oui, c'est bon", correct: false, feedback: "Oups ! Regarde : 8 est beaucoup plus loin que 5. Tu es sortie de la zone !" },
+                { text: "Non, c'est interdit ⛔", correct: true, feedback: "Bravo ! 8 est trop loin, tu es sortie de la zone." }
+            ]
+        },
+        {
+            title: "Le mot magique",
+            text: "En maths, cette 'zone' entre deux nombres s'appelle un <strong>INTERVALLE</strong>. C'est juste un mot savant pour dire 'morceau de route'.",
+            visual: "Intervalle = Morceau de route",
+            options: [
+                { text: "J'ai compris le mot !", correct: true, feedback: "Génial ! Tu as appris le mot le plus important du chapitre. 🎉" }
+            ]
+        },
+        {
+            title: "Un nouvel intervalle",
+            text: "Changeons de zone. Maintenant, l'intervalle est <strong>entre -2 et 3</strong>. Est-ce que <strong>0</strong> est dans l'intervalle ?",
+            visual: "Zone : de -2 jusqu'à 3",
+            options: [
+                { text: "Oui ✅", correct: true, feedback: "Parfait ! 0 est bien au milieu." },
+                { text: "Non ❌", correct: false, feedback: "Rappelle-toi l'ordre : -2, -1, 0, 1, 2, 3... Le 0 est bien sur le chemin !" }
+            ]
+        }
+    ];
+
+    let currentQuestion = 0;
+
+    function startGame() {
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[currentQuestion];
+        document.getElementById('question-title').innerHTML = q.title;
+        document.getElementById('question-text').innerHTML = q.text;
+        document.getElementById('visual-container').innerHTML = q.visual;
+        
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = '';
+        
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.innerHTML = opt.text;
+            btn.onclick = () => checkAnswer(opt);
+            optionsDiv.appendChild(btn);
+        });
+
+        document.getElementById('feedback-area').style.display = 'none';
+        document.getElementById('next-q-btn').style.display = 'none';
+        
+        // Update Progress
+        const percent = (currentQuestion / questions.length) * 100;
+        document.getElementById('progress').style.width = percent + '%';
+    }
+
+    function checkAnswer(option) {
+        const feedbackDiv = document.getElementById('feedback-area');
+        feedbackDiv.style.display = 'block';
+        feedbackDiv.innerHTML = option.feedback;
+        feedbackDiv.className = 'feedback ' + (option.correct ? 'success' : 'error');
+
+        if (option.correct) {
+            triggerConfetti();
+            document.getElementById('next-q-btn').style.display = 'inline-block';
+            // Disable buttons to prevent multiple clicks
+            const btns = document.querySelectorAll('#options button');
+            btns.forEach(b => b.disabled = true);
+        }
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+            showQuestion();
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function finishQuiz() {
+        document.getElementById('progress').style.width = '100%';
+        document.getElementById('quiz-content').innerHTML = `
+            <h1>🎉 Félicitations !</h1>
+            <p>Tu as terminé le Niveau 1 ! Tu as compris ce qu'est un intervalle.</p>
+            <div class="visual-aid">Tu es prête pour les crochets [ et ] !</div>
+            <p>Fais une petite pause et reviens pour le niveau 2.</p>
+        `;
+        document.getElementById('feedback-area').style.display = 'none';
+        document.getElementById('next-q-btn').style.display = 'none';
+        triggerConfetti();
+        triggerConfetti();
+    }
+
+    function triggerConfetti() {
+        for(let i=0; i<30; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 5000);
+        }
+    }
+</script>
+
+</body>
+</html>

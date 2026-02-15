@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths Seconde - Niveau 2</title>
+    <style>
+        :root {
+            --primary: #FF6B6B; /* Rouge doux pour l'attention */
+            --accent: #4ECDC4;  /* Turquoise apaisant */
+            --text: #2D3436;
+            --bg: #F7FFF7;
+            --card: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Verdana', 'Segoe UI', sans-serif; /* Verdana est très lisible pour les dys */
+            background-color: var(--bg);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text);
+            font-size: 18px; /* Police de base augmentée */
+        }
+
+        .container {
+            background-color: var(--card);
+            border-radius: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* Zone visuelle clé pour l'apprentissage */
+        .visual-aid {
+            margin: 20px 0;
+            padding: 20px;
+            background: #FFF4E6;
+            border: 3px dashed var(--primary);
+            border-radius: 15px;
+            font-weight: bold;
+            color: #333;
+            font-size: 1.5rem; /* Très gros pour bien voir les symboles */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            background-color: white;
+            border: 3px solid var(--accent);
+            color: #333;
+            padding: 18px 20px; /* Zone de touche large pour mobile */
+            font-size: 1.2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            font-weight: 700;
+            font-family: inherit;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .feedback.success { background-color: #D4EDDA; color: #155724; border: 2px solid #C3E6CB; }
+        .feedback.error { background-color: #F8D7DA; color: #721C24; border: 2px solid #F5C6CB; }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            height: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            margin-top: 20px;
+            display: none;
+            width: 100%;
+        }
+
+        /* Pour mettre en valeur les nombres importants */
+        .highlight {
+            color: var(--primary);
+            font-size: 1.4rem;
+            font-weight: 900;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="progress-container">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <div id="quiz-content">
+        <h1 id="q-title">Niveau 2 🟡</h1>
+        
+        <div id="visual" class="visual-aid">
+            <span style="font-size: 3rem;">[ 2 ; 5 ]</span>
+            <span>Les Crochets</span>
+        </div>
+
+        <p id="q-text">Prête à découvrir le secret des crochets ?</p>
+        
+        <div class="btn-group" id="options">
+            <button onclick="startGame()">C'est parti !</button>
+        </div>
+    </div>
+
+    <div id="feedback" class="feedback"></div>
+    <button id="next-btn" class="nav-btn" onclick="nextQuestion()">Continuer ➡️</button>
+</div>
+
+<script>
+    /* Scénario pédagogique : 
+       On personnifie le crochet. Il a des bras. 
+       S'il entoure le nombre, il le prend. 
+       S'il lui tourne le dos, il le laisse. 
+    */
+    const questions = [
+        {
+            title: "Le crochet gourmand",
+            text: "Regarde ce crochet : <span class='highlight'>[ 3</span>. <br>Le crochet pointe ses bras VERS le 3. Il veut l'attraper.<br>À ton avis, est-ce que le 3 est <strong>invité</strong> ?",
+            visual: "👉 [ 3 ...",
+            options: [
+                { text: "Oui, le 3 est PRIS (invité) ✅", correct: true, feedback: "Exactement ! Les bras du crochet prennent le 3. On dit que c'est FERMÉ." },
+                { text: "Non, le 3 est rejeté ❌", correct: false, feedback: "Regarde bien : le crochet [ se tourne vers le 3 pour le manger ! Il le prend." }
+            ]
+        },
+        {
+            title: "Le crochet fâché",
+            text: "Maintenant regarde celui-ci : <span class='highlight'>] 3</span>. <br>Le crochet tourne le DOS au 3. Il regarde ailleurs.<br>Est-ce que le 3 est invité ?",
+            visual: "👈 ] 3 ...",
+            options: [
+                { text: "Oui, il vient.", correct: false, feedback: "Non, le crochet lui tourne le dos ! Le 3 reste dehors." },
+                { text: "Non, le 3 est EXCLU (interdit) ⛔", correct: true, feedback: "Bravo ! Le crochet rejette le 3. On dit que c'est OUVERT." }
+            ]
+        },
+        {
+            title: "On teste !",
+            text: "Voici l'intervalle <span class='highlight'>[ 0 ; 10 ]</span>.<br>Regarde les crochets autour du 0 et du 10. <br>Est-ce que tu as le droit de prendre le <strong>0</strong> ?",
+            visual: "[ 0 ; 10 ]",
+            options: [
+                { text: "Oui, je prends le 0 👍", correct: true, feedback: "Oui ! Le crochet [ regarde le 0. Il le prend." },
+                { text: "Non, pas de 0", correct: false, feedback: "Regarde le crochet à côté du 0. Il est tourné VERS lui. Donc il le prend." }
+            ]
+        },
+        {
+            title: "Attention au piège",
+            text: "Voici l'intervalle <span class='highlight'>[ 5 ; 9 [</span>.<br>Regarde bien le crochet à côté du 9.<br>Est-ce que le nombre <strong>9</strong> est dans l'équipe ?",
+            visual: "[ 5 ; 9 [",
+            options: [
+                { text: "Oui, le 9 est là", correct: false, feedback: "Aïe ! Regarde le crochet après le 9. Il est comme ça : [. Il tourne le dos au 9 !" },
+                { text: "Non, le 9 est exclu 🚫", correct: true, feedback: "Superbe ! Le 5 est pris (crochet vers lui), mais le 9 est exclu (crochet tourne le dos)." }
+            ]
+        },
+        {
+            title: "Le Boss Final",
+            text: "Tu as l'intervalle <span class='highlight'>] -2 ; 4 ]</span>.<br>Quels nombres sont dans l'intervalle ?",
+            visual: "] -2 ; 4 ]",
+            options: [
+                { text: "Le -2 et le 4", correct: false, feedback: "Presque. Le 4 est pris (], bras vers lui). Mais le -2 est rejeté (], dos à lui)." },
+                { text: "Pas le -2, mais le 4 est là ✅", correct: true, feedback: "Championne ! Le -2 est exclu, mais le 4 est inclus." }
+            ]
+        }
+    ];
+
+    let current = 0;
+
+    function startGame() {
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[current];
+        document.getElementById('q-title').innerHTML = q.title;
+        document.getElementById('q-text').innerHTML = q.text;
+        document.getElementById('visual').innerHTML = q.visual;
+        
+        const opts = document.getElementById('options');
+        opts.innerHTML = '';
+        
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.innerHTML = opt.text;
+            btn.onclick = () => check(opt, btn);
+            opts.appendChild(btn);
+        });
+
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        updateProgress();
+    }
+
+    function check(opt, btn) {
+        const fb = document.getElementById('feedback');
+        fb.style.display = 'block';
+        fb.innerHTML = opt.feedback;
+        fb.className = 'feedback ' + (opt.correct ? 'success' : 'error');
+
+        // Désactiver tous les boutons
+        const allBtns = document.querySelectorAll('#options button');
+        allBtns.forEach(b => b.disabled = true);
+
+        if(opt.correct) {
+            btn.style.backgroundColor = "#D4EDDA";
+            btn.style.borderColor = "#28a745";
+            document.getElementById('next-btn').style.display = 'block';
+        } else {
+            btn.style.backgroundColor = "#F8D7DA";
+            btn.style.borderColor = "#dc3545";
+            // On laisse une chance de comprendre, mais on force à passer à la suite ou recommencer
+             setTimeout(() => {
+                // Optionnel : réactiver pour laisser réessayer ? 
+                // Pour l'instant on force le bouton suivant pour ne pas bloquer
+                document.getElementById('next-btn').style.display = 'block';
+                document.getElementById('next-btn').innerText = "Réessayer la question ↺";
+                document.getElementById('next-btn').onclick = () => {
+                     // Reset simple de la question
+                     showQuestion();
+                };
+            }, 1500);
+        }
+    }
+
+    function nextQuestion() {
+        // Si c'était un bouton "Réessayer", on ne change pas l'index
+        if(document.getElementById('next-btn').innerText.includes("Réessayer")) {
+            showQuestion();
+            return;
+        }
+
+        current++;
+        if(current < questions.length) {
+            showQuestion();
+        } else {
+            finish();
+        }
+    }
+
+    function updateProgress() {
+        const pct = (current / questions.length) * 100;
+        document.getElementById('progress').style.width = pct + '%';
+    }
+
+    function finish() {
+        document.getElementById('progress').style.width = '100%';
+        document.getElementById('quiz-content').innerHTML = `
+            <h1>🎉 Niveau 2 Réussi !</h1>
+            <p>Tu es maintenant une experte des crochets !</p>
+            <div class="visual-aid">Rappelle-toi :<br>Bras vers le nombre = Amis ❤️<br>Dos au nombre = Fâchés 💔</div>
+            <a href="niveau3.html" style="text-decoration:none;">
+                <button style="background:var(--accent); color:#fff; border:none; margin-top:20px;">
+                    Vers le Niveau 3 : L'Infini 🚀
+                </button>
+            </a>
+        `;
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
