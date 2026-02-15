@@ -105,17 +105,15 @@
     }
 
     .card {
-      text-decoration: none;
-      color: var(--ink);
       background: var(--card);
       border-radius: var(--radius);
       border: 2px solid rgba(19, 34, 56, 0.08);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
       padding: 18px;
-      min-height: 110px;
+      min-height: 180px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      gap: 8px;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
@@ -138,6 +136,33 @@
       margin: 11px 0 4px;
       font-size: 1.1rem;
       line-height: 1.2;
+    }
+
+    .card-title {
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 800;
+      width: fit-content;
+    }
+
+    .content-links {
+      margin-top: 8px;
+      display: grid;
+      gap: 6px;
+      text-align: left;
+    }
+
+    .content-links a {
+      display: inline-block;
+      text-decoration: none;
+      color: #0f6fd2;
+      background: #f7fbff;
+      border: 1px solid #d9e8f8;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 0.86rem;
+      font-weight: 800;
+      width: fit-content;
     }
 
     .hint {
@@ -169,15 +194,15 @@
       <button class="enter" id="openMenu">Ouvrir le menu des matières</button>
 
       <section id="menu" aria-label="Matières de seconde générale">
-        <a class="card" href="maths.html"><span class="tag c1">Matière</span><h2>Maths</h2><span>Exercices de logique, calcul, fonctions.</span></a>
-        <a class="card" href="francais.html"><span class="tag c2">Matière</span><h2>Français</h2><span>Lecture, écriture, méthode, oral.</span></a>
-        <a class="card" href="physique-chimie.html"><span class="tag c3">Matière</span><h2>Physique-Chimie</h2><span>Expériences, notions, problèmes guidés.</span></a>
-        <a class="card" href="svt.html"><span class="tag c1">Matière</span><h2>SVT</h2><span>Corps humain, Terre, environnement.</span></a>
-        <a class="card" href="histoire-geo.html"><span class="tag c2">Matière</span><h2>Histoire-Géo</h2><span>Repères, analyses, documents.</span></a>
-        <a class="card" href="anglais.html"><span class="tag c3">Matière</span><h2>Anglais</h2><span>Compréhension, vocabulaire, communication.</span></a>
-        <a class="card" href="espagnol.html"><span class="tag c1">Matière</span><h2>Espagnol</h2><span>Expression, civilisation, grammaire.</span></a>
-        <a class="card" href="enseignement-scientifique.html"><span class="tag c2">Matière</span><h2>Ens. Scientifique</h2><span>Culture scientifique transversale.</span></a>
-        <a class="card" href="snt.html"><span class="tag c3">Matière</span><h2>SNT</h2><span>Numérique, données, réseaux, web.</span></a>
+        <div class="card"><span class="tag c1">Matière</span><a class="card-title" href="maths.html"><h2>Maths</h2></a><span>Exercices de logique, calcul, fonctions.</span><div class="content-links"><a href="maths_exercice_1.html">📝 Exercice 1</a><a href="maths_exercice_2.html">📝 Exercice 2</a><a href="maths_exercice_3.html">📝 Exercice 3</a></div></div>
+        <div class="card"><span class="tag c2">Matière</span><a class="card-title" href="francais.html"><h2>Français</h2></a><span>Lecture, écriture, méthode, oral.</span><div class="content-links"><a href="francais_exercice_1.html">📝 Exercice 1</a><a href="francais_exercice_2.html">📝 Exercice 2</a><a href="francais_exercice_3.html">📝 Exercice 3</a></div></div>
+        <div class="card"><span class="tag c3">Matière</span><a class="card-title" href="physique-chimie.html"><h2>Physique-Chimie</h2></a><span>Expériences, notions, problèmes guidés.</span><div class="content-links"><a href="physique_chimie_exercice_1.html">📝 Exercice 1</a><a href="physique_chimie_exercice_2.html">📝 Exercice 2</a><a href="physique_chimie_exercice_3.html">📝 Exercice 3</a></div></div>
+        <div class="card"><span class="tag c1">Matière</span><a class="card-title" href="svt.html"><h2>SVT</h2></a><span>Corps humain, Terre, environnement.</span><div class="content-links"><a href="svt_exercice_1.html">📝 Exercice 1</a><a href="svt_exercice_2.html">📝 Exercice 2</a><a href="svt_exercice_3.html">📝 Exercice 3</a></div></div>
+        <div class="card"><span class="tag c2">Matière</span><a class="card-title" href="histoire-geo.html"><h2>Histoire-Géo</h2></a><span>Repères, analyses, documents.</span><div class="content-links"><a href="histoire_geo_exercice_1.html">📝 Exercice 1</a><a href="histoire_geo_exercice_2.html">📝 Exercice 2</a><a href="histoire_geo_exercice_3.html">📝 Exercice 3</a></div></div>
+        <div class="card"><span class="tag c3">Matière</span><a class="card-title" href="anglais.html"><h2>Anglais</h2></a><span>Compréhension, vocabulaire, communication.</span><div class="content-links"><a href="anglais_exercice_1.html">📝 Exercice 1</a><a href="anglais_exercice_2.html">📝 Exercice 2</a><a href="anglais_exercice_3.html">📝 Exercice 3</a></div></div>
+        <div class="card"><span class="tag c1">Matière</span><a class="card-title" href="espagnol.html"><h2>Espagnol</h2></a><span>Expression, civilisation, grammaire.</span><div class="content-links"><a href="espagnol_exercice_1.html">📝 Exercice 1</a><a href="espagnol_exercice_2.html">📝 Exercice 2</a><a href="espagnol_exercice_3.html">📝 Exercice 3</a></div></div>
+        <div class="card"><span class="tag c2">Matière</span><a class="card-title" href="enseignement-scientifique.html"><h2>Ens. Scientifique</h2></a><span>Culture scientifique transversale.</span><div class="content-links"><a href="ens_scientifique_exercice_1.html">📝 Exercice 1</a><a href="ens_scientifique_exercice_2.html">📝 Exercice 2</a><a href="ens_scientifique_exercice_3.html">📝 Exercice 3</a></div></div>
+        <div class="card"><span class="tag c3">Matière</span><a class="card-title" href="snt.html"><h2>SNT</h2></a><span>Numérique, données, réseaux, web.</span><div class="content-links"><a href="snt_exercice_1.html">📝 Exercice 1</a><a href="snt_exercice_2.html">📝 Exercice 2</a><a href="snt_exercice_3.html">📝 Exercice 3</a></div></div>
       </section>
     </section>
 
