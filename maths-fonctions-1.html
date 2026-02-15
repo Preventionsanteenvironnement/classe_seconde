@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fonctions - Niveau 1</title>
+    <style>
+        :root {
+            --primary: #3F51B5; /* Indigo */
+            --accent: #FF4081;  /* Rose vif */
+            --input: #00BCD4;   /* Cyan (Entrée) */
+            --output: #4CAF50;  /* Vert (Sortie) */
+            --bg: #E8EAF6;
+            --text: #2C3E50;
+            --card: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Verdana', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text);
+            font-size: 18px;
+        }
+
+        .container {
+            background-color: var(--card);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        /* La Machine Visuelle */
+        .machine-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .box {
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.2rem;
+            min-width: 60px;
+        }
+
+        .input-box { background-color: var(--input); }
+        .machine-box { 
+            background-color: var(--text); 
+            border: 4px solid var(--primary);
+            font-size: 1.5rem;
+            position: relative;
+        }
+        .output-box { background-color: var(--output); }
+
+        .arrow { font-size: 2rem; color: var(--text); }
+
+        /* Animation de la machine */
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        .shaking { animation: shake 0.5s; }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            background-color: white;
+            border: 3px solid var(--primary);
+            color: var(--text);
+            padding: 18px;
+            font-size: 1.2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.2s;
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .feedback.success { background-color: #E8F5E9; color: #2E7D32; border: 2px solid #A5D6A7; }
+        .feedback.error { background-color: #FFEBEE; color: #C62828; border: 2px solid #EF9A9A; }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            height: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            margin-top: 20px;
+            width: 100%;
+            display: none;
+        }
+        
+        .highlight { color: var(--accent); font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="progress-container">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <div id="quiz-content">
+        <h1 id="q-title">Niveau 1 : La Machine 🏭</h1>
+        
+        <div id="visual-area">
+            <div class="machine-container">
+                <div class="box input-box">Entrée</div>
+                <div class="arrow">➡️</div>
+                <div id="machine-visual" class="box machine-box">⚙️ f</div>
+                <div class="arrow">➡️</div>
+                <div class="box output-box">Sortie</div>
+            </div>
+        </div>
+
+        <p id="q-text">Une fonction, c'est comme une machine automatique.</p>
+        
+        <div class="btn-group" id="options">
+            <button onclick="startGame()">Allumer la machine ! 🔌</button>
+        </div>
+    </div>
+
+    <div id="feedback" class="feedback"></div>
+    <button id="next-btn" class="nav-btn" onclick="nextQuestion()">Continuer ➡️</button>
+</div>
+
+<script>
+    const questions = [
+        {
+            title: "Le concept",
+            text: "Imagine une machine qui <strong>ajoute 2</strong> à tout ce qui rentre.<br>Si tu mets le nombre <span style='color:#00BCD4'>5</span> dans la machine, qu'est-ce qui ressort ?",
+            visual: "Entrée: 5 ➡️ [ Machine +2 ] ➡️ ???",
+            options: [
+                { text: "7 ✅", correct: true, feedback: "Bravo ! 5 + 2 = 7. La machine a transformé le 5 en 7." },
+                { text: "52", correct: false, feedback: "Non, la machine fait une addition (+2), elle ne colle pas les chiffres." }
+            ]
+        },
+        {
+            title: "Le vocabulaire (1)",
+            text: "En maths, on donne des petits noms :<br>Le nombre qui <strong>rentre</strong> (l'ingrédient) s'appelle <span class='highlight'>x</span>.<br>La machine s'appelle souvent <span class='highlight'>f</span>.",
+            visual: "x ➡️ [ Machine f ] ➡️ ...",
+            options: [
+                { text: "J'ai compris ! x c'est l'entrée.", correct: true, feedback: "Super. x c'est le nombre de départ." }
+            ]
+        },
+        {
+            title: "Le vocabulaire (2)",
+            text: "Le nombre qui <strong>sort</strong> (le résultat), on l'appelle <span class='highlight'>f(x)</span>.<br>Ça se lit 'f de x' (le résultat de la machine f avec le nombre x).",
+            visual: "x ➡️ [ f ] ➡️ f(x)",
+            options: [
+                { text: "Ok, f(x) c'est la sortie ! 👍", correct: true, feedback: "Exactement ! f(x) c'est le produit fini." }
+            ]
+        },
+        {
+            title: "À toi de calculer !",
+            text: "La machine <span class='highlight'>f(x) = 3x</span> (elle multiplie par 3).<br>Si on rentre <strong>x = 4</strong>, que vaut f(4) ?",
+            visual: "4 ➡️ [ ×3 ] ➡️ ???",
+            options: [
+                { text: "7", correct: false, feedback: "Attention, 3x veut dire 3 FOIS x. Ce n'est pas une addition." },
+                { text: "12 ✅", correct: true, feedback: "Parfait ! 3 fois 4 = 12. Donc f(4) = 12." }
+            ]
+        },
+        {
+            title: "La machine carrée",
+            text: "Voici une machine célèbre : <span class='highlight'>g(x) = x²</span> (x au carré).<br>Si on rentre <strong>-3</strong>, que ressort la machine ?",
+            visual: "-3 ➡️ [ au carré ] ➡️ ???",
+            options: [
+                { text: "-9", correct: false, feedback: "Aïe ! Rappelle-toi : un nombre négatif au carré devient positif ! (-3) × (-3) = ?" },
+                { text: "9 ✅", correct: true, feedback: "Excellente réponse ! Moins par moins donne plus. (-3)² = 9." }
+            ]
+        }
+    ];
+
+    let current = 0;
+
+    function startGame() {
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[current];
+        document.getElementById('q-title').innerHTML = q.title;
+        document.getElementById('q-text').innerHTML = q.text;
+        
+        // Si visuel simple ou HTML
+        if(q.visual.includes("Machine") || q.visual.includes("➡️")) {
+             document.getElementById('visual-area').innerHTML = `<div class="machine-container" style="font-size:1.2rem">${q.visual}</div>`;
+        } else {
+             document.getElementById('visual-area').innerHTML = `<div class="machine-container">${q.visual}</div>`;
+        }
+        
+        const opts = document.getElementById('options');
+        opts.innerHTML = '';
+        
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.innerHTML = opt.text;
+            btn.onclick = () => check(opt, btn);
+            opts.appendChild(btn);
+        });
+
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        updateProgress();
+    }
+
+    function check(opt, btn) {
+        // Animation de la machine
+        const machine = document.querySelector('.machine-container');
+        if(machine) {
+            machine.classList.add('shaking');
+            setTimeout(() => machine.classList.remove('shaking'), 500);
+        }
+
+        const fb = document.getElementById('feedback');
+        fb.style.display = 'block';
+        fb.innerHTML = opt.feedback;
+        fb.className = 'feedback ' + (opt.correct ? 'success' : 'error');
+
+        const allBtns = document.querySelectorAll('#options button');
+        allBtns.forEach(b => b.disabled = true);
+
+        if(opt.correct) {
+            btn.style.backgroundColor = "#E8F5E9";
+            btn.style.borderColor = "#4CAF50";
+            document.getElementById('next-btn').style.display = 'block';
+            document.getElementById('next-btn').innerText = "Continuer ➡️";
+            document.getElementById('next-btn').onclick = nextQuestion;
+        } else {
+            btn.style.backgroundColor = "#FFEBEE";
+            btn.style.borderColor = "#F44336";
+            setTimeout(() => {
+                document.getElementById('next-btn').style.display = 'block';
+                document.getElementById('next-btn').innerText = "Réessayer ↺";
+                document.getElementById('next-btn').onclick = showQuestion;
+            }, 1500);
+        }
+    }
+
+    function nextQuestion() {
+        current++;
+        if(current < questions.length) {
+            showQuestion();
+        } else {
+            finish();
+        }
+    }
+
+    function updateProgress() {
+        const pct = (current / questions.length) * 100;
+        document.getElementById('progress').style.width = pct + '%';
+    }
+
+    function finish() {
+        document.getElementById('progress').style.width = '100%';
+        document.getElementById('quiz-content').innerHTML = `
+            <h1>🎉 Niveau 1 Terminé !</h1>
+            <p>Tu as compris le secret de la machine !</p>
+            <div class="machine-container" style="background:#E8F5E9; border:none;">
+                Entrée (x) ➡️ [ f ] ➡️ Sortie f(x)
+            </div>
+            <a href="maths-fonctions-2.html" style="text-decoration:none;">
+                <button style="background:var(--accent); color:#fff; border:none; margin-top:20px;">
+                    Niveau 2 : Lire les Courbes 📈
+                </button>
+            </a>
+        `;
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

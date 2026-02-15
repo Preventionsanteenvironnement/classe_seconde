@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fonctions - Niveau 2</title>
+    <style>
+        :root {
+            --primary: #9C27B0; /* Violet */
+            --accent: #FFEB3B;  /* Jaune */
+            --x-axis: #00BCD4;   /* Cyan (Horizontal) */
+            --y-axis: #FF4081;  /* Rose (Vertical) */
+            --bg: #F3E5F5;
+            --text: #2C3E50;
+            --card: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Verdana', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text);
+            font-size: 18px;
+        }
+
+        .container {
+            background-color: var(--card);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        /* Le Graphique SVG */
+        .graph-container {
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .axis-label { font-weight: bold; font-size: 14px; }
+        .grid-line { stroke: #eee; stroke-width: 1; }
+        .curve { stroke: var(--primary); stroke-width: 4; fill: none; }
+        .point { fill: var(--primary); transition: r 0.3s; }
+        .highlight-line { stroke-dasharray: 5; stroke-width: 2; opacity: 0; transition: opacity 0.5s; }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            background-color: white;
+            border: 3px solid var(--primary);
+            color: var(--text);
+            padding: 18px;
+            font-size: 1.2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.2s;
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .feedback.success { background-color: #E1BEE7; color: #4A148C; border: 2px solid #AB47BC; }
+        .feedback.error { background-color: #FFEBEE; color: #C62828; border: 2px solid #EF9A9A; }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            height: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            margin-top: 20px;
+            width: 100%;
+            display: none;
+        }
+        
+        .color-x { color: var(--x-axis); font-weight: bold; }
+        .color-y { color: var(--y-axis); font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="progress-container">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <div id="quiz-content">
+        <h1 id="q-title">Niveau 2 : Le Dessin 📈</h1>
+        
+        <div class="graph-container">
+            <svg viewBox="-1 -1 8 6">
+                <defs>
+                    <pattern id="grid" width="1" height="1" patternUnits="userSpaceOnUse">
+                        <path d="M 1 0 L 0 0 0 1" fill="none" stroke="#eee" stroke-width="0.1"/>
+                    </pattern>
+                </defs>
+                <rect width="8" height="6" fill="url(#grid)" />
+
+                <line x1="0" y1="5" x2="7" y2="5" stroke="#333" stroke-width="0.1" /> <line x1="0" y1="5" x2="0" y2="0" stroke="#333" stroke-width="0.1" /> <text x="6.5" y="5.5" font-size="0.5" fill="#00BCD4" font-weight="bold">x</text>
+                <text x="-0.8" y="0.5" font-size="0.5" fill="#FF4081" font-weight="bold">f(x)</text>
+                
+                <text x="1" y="5.5" font-size="0.3">1</text>
+                <text x="2" y="5.5" font-size="0.3">2</text>
+                <text x="3" y="5.5" font-size="0.3">3</text>
+                <text x="4" y="5.5" font-size="0.3">4</text>
+                
+                <text x="-0.5" y="4" font-size="0.3">1</text>
+                <text x="-0.5" y="3" font-size="0.3">2</text>
+                <text x="-0.5" y="2" font-size="0.3">3</text>
+                <text x="-0.5" y="1" font-size="0.3">4</text>
+
+                <path d="M 0 4 Q 2 0 4 4 T 6 5" class="curve" />
+                
+                <circle id="point-visual" cx="2" cy="2" r="0.2" class="point" style="opacity:0" />
+                
+                <line id="line-x" x1="2" y1="5" x2="2" y2="2" stroke="#00BCD4" class="highlight-line" />
+                <line id="line-y" x1="0" y1="2" x2="2" y2="2" stroke="#FF4081" class="highlight-line" />
+            </svg>
+        </div>
+
+        <p id="q-text">L'ensemble de tous les résultats de la machine forme une courbe.</p>
+        
+        <div class="btn-group" id="options">
+            <button onclick="startGame()">Observer la courbe 👀</button>
+        </div>
+    </div>
+
+    <div id="feedback" class="feedback"></div>
+    <button id="next-btn" class="nav-btn" onclick="nextQuestion()">Continuer ➡️</button>
+</div>
+
+<script>
+    const questions = [
+        {
+            title: "L'axe du départ",
+            text: "Sur le graphique, les nombres de départ (les <span class='color-x'>x</span>) sont sur quel axe ?",
+            highlight: null,
+            options: [
+                { text: "L'axe horizontal (couché) ⎯", correct: true, feedback: "Oui ! C'est le sol, là où tu marches." },
+                { text: "L'axe vertical (debout) |", correct: false, feedback: "Non, ça c'est la hauteur. Les x sont à l'horizontale." }
+            ]
+        },
+        {
+            title: "L'axe de l'arrivée",
+            text: "Les résultats <span class='color-y'>f(x)</span> (la sortie de la machine) sont sur l'autre axe.",
+            highlight: null,
+            options: [
+                { text: "C'est l'axe vertical (la hauteur) ⬆️", correct: true, feedback: "Exactement ! Plus f(x) est grand, plus la courbe monte haut." }
+            ]
+        },
+        {
+            title: "Lire une image",
+            text: "Regarde le nombre <strong>2</strong> sur l'axe horizontal (<span class='color-x'>x = 2</span>).<br>Monte jusqu'à la courbe. À quelle hauteur arrives-tu ?",
+            highlight: {x: 2, y: 2, valY: 3}, // SVG coords: y=2 visual is value 3
+            options: [
+                { text: "Hauteur 2", correct: false, feedback: "Regarde bien l'axe vertical à gauche." },
+                { text: "Hauteur 3 ✅", correct: true, feedback: "Bravo ! Quand x=2, la courbe est à la hauteur 3. Donc f(2) = 3." }
+            ]
+        },
+        {
+            title: "Un autre point",
+            text: "Cherche <strong>x = 4</strong> (sur l'axe du bas).<br>Quelle est l'image f(4) (la hauteur) ?",
+            highlight: {x: 4, y: 4, valY: 1}, // SVG coords: y=4 visual is value 1
+            options: [
+                { text: "1 ✅", correct: true, feedback: "Super ! Au niveau de 4, la courbe est redescendue à 1." },
+                { text: "4", correct: false, feedback: "Non, 4 c'est ton point de départ. Regarde la hauteur sur le côté." }
+            ]
+        },
+        {
+            title: "Le Point",
+            text: "En maths, un point se note <strong>( x ; y )</strong>.<br>Pour notre premier exemple, on avait x=2 et résultat=3. Comment on l'écrit ?",
+            highlight: {x: 2, y: 2, valY: 3},
+            options: [
+                { text: "( 3 ; 2 )", correct: false, feedback: "Attention à l'ordre ! D'abord le départ (x), ensuite l'arrivée (y)." },
+                { text: "( 2 ; 3 ) ✅", correct: true, feedback: "C'est ça ! (Départ ; Arrivée)." }
+            ]
+        }
+    ];
+
+    let current = 0;
+
+    function startGame() {
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[current];
+        document.getElementById('q-title').innerHTML = q.title;
+        document.getElementById('q-text').innerHTML = q.text;
+        
+        // Gestion des aides visuelles sur le graphique
+        const pt = document.getElementById('point-visual');
+        const lx = document.getElementById('line-x');
+        const ly = document.getElementById('line-y');
+
+        if(q.highlight) {
+            pt.style.opacity = 1;
+            pt.setAttribute('cx', q.highlight.x);
+            pt.setAttribute('cy', q.highlight.y);
+            
+            lx.style.opacity = 1;
+            lx.setAttribute('x1', q.highlight.x);
+            lx.setAttribute('x2', q.highlight.x);
+            lx.setAttribute('y2', q.highlight.y); // Stop at point
+
+            ly.style.opacity = 1;
+            ly.setAttribute('y1', q.highlight.y);
+            ly.setAttribute('y2', q.highlight.y);
+            ly.setAttribute('x2', q.highlight.x); // Stop at point
+        } else {
+            pt.style.opacity = 0;
+            lx.style.opacity = 0;
+            ly.style.opacity = 0;
+        }
+        
+        const opts = document.getElementById('options');
+        opts.innerHTML = '';
+        
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.innerHTML = opt.text;
+            btn.onclick = () => check(opt, btn);
+            opts.appendChild(btn);
+        });
+
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        updateProgress();
+    }
+
+    function check(opt, btn) {
+        const fb = document.getElementById('feedback');
+        fb.style.display = 'block';
+        fb.innerHTML = opt.feedback;
+        fb.className = 'feedback ' + (opt.correct ? 'success' : 'error');
+
+        const allBtns = document.querySelectorAll('#options button');
+        allBtns.forEach(b => b.disabled = true);
+
+        if(opt.correct) {
+            btn.style.backgroundColor = "#E1BEE7";
+            btn.style.borderColor = "#9C27B0";
+            document.getElementById('next-btn').style.display = 'block';
+            document.getElementById('next-btn').innerText = "Continuer ➡️";
+            document.getElementById('next-btn').onclick = nextQuestion;
+        } else {
+            btn.style.backgroundColor = "#FFEBEE";
+            btn.style.borderColor = "#F44336";
+            setTimeout(() => {
+                document.getElementById('next-btn').style.display = 'block';
+                document.getElementById('next-btn').innerText = "Réessayer ↺";
+                document.getElementById('next-btn').onclick = showQuestion;
+            }, 1500);
+        }
+    }
+
+    function nextQuestion() {
+        current++;
+        if(current < questions.length) {
+            showQuestion();
+        } else {
+            finish();
+        }
+    }
+
+    function updateProgress() {
+        const pct = (current / questions.length) * 100;
+        document.getElementById('progress').style.width = pct + '%';
+    }
+
+    function finish() {
+        document.getElementById('progress').style.width = '100%';
+        document.getElementById('quiz-content').innerHTML = `
+            <h1>🎉 Niveau 2 Validé !</h1>
+            <p>Tu sais lire une courbe !</p>
+            <div style="background:#fff; padding:15px; border-radius:15px; margin:20px 0;">
+                Rappel :<br>
+                <span class="color-x">x</span> = Horizontal (Départ)<br>
+                <span class="color-y">f(x)</span> = Vertical (Hauteur)
+            </div>
+            <a href="maths-fonctions-3.html" style="text-decoration:none;">
+                <button style="background:var(--primary); color:#fff; border:none; margin-top:20px;">
+                    Niveau 3 : La Chasse au Trésor (Antécédents) 🕵️‍♀️
+                </button>
+            </a>
+        `;
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
